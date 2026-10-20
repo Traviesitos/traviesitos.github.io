@@ -1,14 +1,21 @@
-// Recibe los pedidos del catálogo y los guarda en esta hoja de Google
-// 1) Crea una hoja de cálculo nueva en Google Drive con la cuenta de la empresa
-// 2) Extensiones > Apps Script > pega este código > Guardar
-// 3) Implementar > Nueva implementación > Tipo: Aplicación web > Ejecutar como: Yo > Acceso: Cualquier persona > Implementar
-// 4) Copia la URL que termina en /exec y pégala en index.html, en CONFIG.endpoint
+// Recibe los pedidos de https://traviesitos.github.io y los guarda en la hoja "Pedidos" de este archivo (Pedidos Traviesitos)
 function doPost(e) {
-  var o = JSON.parse(e.postData.contents);
-  var sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Pedidos') || SpreadsheetApp.getActiveSpreadsheet().insertSheet('Pedidos');
-  if (sh.getLastRow() === 0) sh.appendRow(['Pedido', 'Fecha', 'Nombre', 'Teléfono', 'Cédula', 'Zona', 'Dirección', 'Horario', 'Ref.', 'Producto', 'Opción', 'Cantidad', 'Delivery', 'Estatus']);
-  o.items.forEach(function (i) {
-    sh.appendRow([o.id, o.fecha, o.cliente.nombre, o.cliente.telefono, o.cliente.cedula, o.cliente.zona, o.cliente.direccion, o.cliente.horario, i.sku, i.nombre, i.opcion, i.q, o.delivery, 'Nuevo']);
-  });
-  return ContentService.createTextOutput('ok');
+  var lock = LockService.getScriptLock(); lock.waitLock(20000);
+  try {
+    var o = JSON.parse(e.postData.contents);
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var sh = ss.getSheetByName('Pedidos') || ss.insertSheet('Pedidos', 0);
+    if (sh.getLastRow() === 0) {
+      sh.appendRow(['Pedido', 'Fecha', 'Teléfono', 'Correo', 'Dirección de envío', 'Promoción', 'Ref.', 'Producto', 'Opción', 'Cantidad', 'Delivery', 'Estatus']);
+      sh.getRange(1, 1, 1, 12).setFontWeight('bold').setBackground('#E5007D').setFontColor('#FFFFFF');
+      sh.setFrozenRows(1);
+    }
+    var fecha = Utilities.formatDate(new Date(o.fecha), 'America/Caracas', 'dd/MM/yyyy HH:mm');
+    var rows = o.items.map(function (i) {
+      return [o.id, fecha, "'" + o.cliente.telefono, o.cliente.correo, o.cliente.direccion, o.promo || '', i.sku, i.nombre, i.opcion || '', i.q, o.delivery, 'Nuevo'];
+    });
+    sh.getRange(sh.getLastRow() + 1, 1, rows.length, 12).setValues(rows);
+    return ContentService.createTextOutput('ok');
+  } finally { lock.releaseLock(); }
 }
+function doGet() { return ContentService.createTextOutput('Pedidos Traviesitos activo'); }

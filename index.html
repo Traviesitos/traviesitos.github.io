@@ -38,8 +38,9 @@ main .wrap{padding-block:18px 60px}
 .tile{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;display:flex;flex-direction:column;cursor:pointer}
 .tile.big{grid-column:span 2}
 .tile .ph{aspect-ratio:1;background:#fff;position:relative;max-width:100%}
-.tile.big .ph{aspect-ratio:2/1.1}
-.tile .ph img{width:100%;height:100%;object-fit:cover;display:block}
+.tile.big .ph{aspect-ratio:2/1.1;overflow:hidden}
+.tile.big .ph::before{content:"";position:absolute;inset:-30px;background:var(--bgi) center/cover no-repeat;filter:blur(26px) saturate(1.1);opacity:.5}
+.tile .ph img{width:100%;height:100%;object-fit:contain;display:block;position:relative}
 .tile.big .ph img.w{object-fit:contain}
 .bdg{position:absolute;display:flex;flex-direction:column;gap:6px;top:10px;right:10px;align-items:flex-end}
 .bdg span{font-family:var(--fd);font-weight:600;font-size:12px;border-radius:8px;padding:3px 9px;background:rgba(255,255,255,.94);color:var(--ac)}
@@ -86,11 +87,11 @@ aside.cart.open{transform:none}
 @media (prefers-reduced-motion:reduce){aside.cart{transition:none}}
 .ch{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid var(--line)}
 .ch h2{font-family:var(--fd);margin:0;font-size:22px}
-.cl{flex:1;overflow-y:auto;padding:8px 20px}
+.cl{flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:8px 20px}
 .ci{display:grid;grid-template-columns:56px 1fr auto;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
 .ci img{width:56px;height:56px;border-radius:10px;object-fit:cover}
 .ci .n{font-weight:800;font-size:14px;line-height:1.25}.ci .r{font-size:12px;color:var(--mut)}
-.cf{padding:14px 20px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:10px}
+.cf{flex:0 0 auto;padding:14px 20px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:10px}
 .steps{display:flex;gap:6px;padding:10px 20px 0;font-size:12px;font-weight:800;color:var(--mut)}.steps span{flex:1;text-align:center;padding:6px 4px;border-radius:999px;background:var(--bg)}.steps span.on{background:var(--pink);color:#fff}
 .secu{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--mut);font-weight:700}
 .thx{text-align:center;padding:18px 4px 6px;display:flex;flex-direction:column;align-items:center;gap:8px}
@@ -103,21 +104,46 @@ aside.cart.open{transform:none}
 form.ck{display:flex;flex-direction:column;gap:10px}
 .fld{display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:700}
 .fld input,.fld select,.fld textarea{border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:12px;padding:10px 12px;font:inherit;font-weight:400}
+.err{color:#C62828;font-size:12px;font-weight:700}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .small{font-size:12.5px;color:var(--mut)}
 .ord{background:var(--bg);border-radius:14px;padding:14px;font-size:14px;display:flex;flex-direction:column;gap:6px}
 .ord b{font-family:var(--fd);font-size:18px;color:var(--pink)}
 .shade{position:fixed;inset:0;background:rgba(15,15,50,.45);z-index:35}
+.promo{position:relative;background:linear-gradient(90deg,var(--pink),#F4508F 35%,var(--sun) 70%,var(--pink));background-size:200% 100%;animation:pg 8s linear infinite;color:#fff;overflow:hidden;white-space:nowrap;font-family:var(--fd);font-weight:600;font-size:14px;cursor:pointer;border:0;width:100%;display:block;padding:0}
+@keyframes pg{to{background-position:200% 0}}
+.promo .track{display:inline-flex;gap:48px;padding:8px 0;animation:mq 26s linear infinite}
+.promo .track span{display:inline-flex;gap:8px;align-items:center}
+.promo b{background:#fff;color:var(--pink);border-radius:6px;padding:1px 7px;font-weight:700}
+@keyframes mq{to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){.promo,.promo .track{animation:none}}
+.offer{margin-top:14px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:linear-gradient(120deg,rgba(229,0,125,.10),rgba(243,146,0,.12));border:2px dashed var(--pink);border-radius:18px;padding:12px 16px;max-width:560px}
+.offer .pct{font-family:var(--fd);font-weight:700;font-size:38px;line-height:1;color:var(--pink)}
+.offer .ot{flex:1 1 200px;min-width:0}.offer .ot b{font-family:var(--fd);font-size:17px;display:block;color:var(--navyt)}.offer .ot span{font-size:13px;color:var(--mut)}
+.offer .code{font-family:var(--fd);font-weight:700;letter-spacing:.06em;background:var(--pink);color:#fff;border-radius:10px;padding:6px 12px;font-size:14px}
+.ship{display:inline-flex;align-items:center;gap:8px;margin-top:12px;font-family:var(--fd);font-weight:600;color:var(--green);font-size:15px}
+.ship svg{flex:0 0 auto}
+.walink{display:inline-flex;align-items:center;gap:6px;margin-left:14px;color:var(--wa);font-weight:800;text-decoration:none;font-size:14px}.walink:hover{text-decoration:underline}
+#welcome{width:min(420px,calc(100% - 32px));text-align:center;overflow:hidden}
+#welcome .wtop{background:linear-gradient(135deg,var(--pink),var(--sun));color:#fff;padding:26px 20px 18px;position:relative}
+#welcome .wtop .big{font-family:var(--fd);font-weight:700;font-size:64px;line-height:1}
+#welcome .wtop .sub{font-family:var(--fd);font-size:18px;font-weight:600}
+#welcome .wb{padding:18px 22px 22px;display:flex;flex-direction:column;gap:10px;align-items:center}
+#welcome .wb p{margin:0;color:var(--mut)}
+#welcome .wb .code{font-family:var(--fd);font-weight:700;font-size:20px;letter-spacing:.08em;border:2px dashed var(--pink);color:var(--pink);border-radius:12px;padding:8px 18px}
+.disc{display:flex;gap:8px;align-items:center;background:rgba(229,0,125,.10);color:var(--pink);font-weight:800;border-radius:12px;padding:8px 12px;font-size:13.5px}
 .soc{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.soc a{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border:1px solid var(--line);border-radius:999px;color:var(--navyt);text-decoration:none;font-size:13px;font-weight:600;background:var(--card,transparent)}.soc a:hover{border-color:var(--navyt)}
 footer{border-top:1px solid var(--line);color:var(--mut);font-size:13px}
 footer .wrap{padding-block:20px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
 @media (max-width:720px){.dlg{grid-template-columns:1fr}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.tile.big{grid-column:span 2}.tile h3{font-size:14.5px}.hk{font-size:13px}.logo img{width:170px}.row2{grid-template-columns:1fr}}
 </style>
 
+<button class="promo" id="promo" type="button" aria-label="Ver promoción: 10% de descuento en tu primera compra"><span class="track" aria-hidden="true"></span></button>
 <div class="strip" aria-hidden="true" id="strip"></div>
 <header class="top"><div class="wrap hero"><div class="logo"><img src="logo.png" alt="Traviesitos Children"></div>
-<div class="txt"><h1>¡Juguetes y ropa que los hacen sonreír!</h1><p>Elige color y talla, mira el video del producto y haz tu pedido en un minuto. Te lo llevamos sin costo de envío.</p>
-<div class="perk"><span>Delivery gratis</span><span>Colores y tallas a elegir</span><span>Atención por WhatsApp</span></div><div class="soc"><a href="https://www.instagram.com/traviesitoschidrens/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor"/></svg><span>@traviesitoschidrens</span></a><a href="https://www.tiktok.com/@traviesitoschidrens" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M14 3v11.5a3.5 3.5 0 1 1-3.5-3.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M14 3c.5 2.6 2.4 4.4 5 4.6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>@traviesitoschidrens</span></a><a href="https://wa.me/584242958656" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 20l1.3-3.9A8 8 0 1 1 8 19.1z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg><span>+58 424 295 8656</span></a></div></div></div></header>
+<div class="txt"><h1>¡Juguetes y ropa para los pequeños de la casa!</h1><p>Mira el video de cada producto, elige color y talla y haz tu pedido en un minuto.</p>
+<div><span class="ship"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h11v9H3zM14 9h4l3 3v3h-7z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="7" cy="17" r="2" fill="currentColor"/><circle cx="17" cy="17" r="2" fill="currentColor"/></svg>Delivery GRATIS hasta tu puerta</span><a class="walink" href="https://wa.me/584242958656?text=Hola%20Traviesitos%2C%20quiero%20informaci%C3%B3n%20de%20un%20producto" target="_blank" rel="noopener">Atención por WhatsApp →</a></div>
+<div class="offer" id="offer"><div class="pct">10%</div><div class="ot"><b>de descuento en tu primera compra</b><span>Se aplica automáticamente al confirmar tu pedido.</span></div><span class="code">BIENVENIDO10</span></div><div class="soc"><a href="https://www.instagram.com/traviesitoschidrens/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor"/></svg><span>@traviesitoschidrens</span></a><a href="https://www.tiktok.com/@traviesitoschidrens" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M14 3v11.5a3.5 3.5 0 1 1-3.5-3.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M14 3c.5 2.6 2.4 4.4 5 4.6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>@traviesitoschidrens</span></a><a href="https://wa.me/584242958656" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 20l1.3-3.9A8 8 0 1 1 8 19.1z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg><span>+58 424 295 8656</span></a></div></div></div></header>
 <div class="bar"><div class="wrap"><div class="chips" id="chips" role="toolbar" aria-label="Secciones"></div>
 <input id="q" type="search" placeholder="Buscar producto" aria-label="Buscar producto">
 <button class="cartbtn" id="openCart" type="button">Mi pedido <b id="count">0</b></button></div></div>
@@ -125,24 +151,29 @@ footer .wrap{padding-block:20px;display:flex;justify-content:space-between;gap:1
 <footer><div class="wrap"><span>Traviesitos Children · Catálogo 2026 · IG/TikTok @traviesitoschidrens · WhatsApp +58 424 295 8656</span><span>Delivery gratis · Precios y disponibilidad se confirman al recibir tu pedido</span></div></footer>
 
 <dialog id="dlg" aria-label="Detalle del producto"><div style="position:relative"><button class="x" id="dx" type="button" aria-label="Cerrar">×</button><div class="dlg">
-<div class="gal"><img class="main" id="dimg" alt=""><video id="dvid" controls playsinline muted hidden></video><div class="th" id="dth"></div></div>
+<div class="gal"><img class="main" id="dimg" alt=""><video id="dvid" controls playsinline muted autoplay loop preload="auto" hidden></video><div class="th" id="dth"></div></div>
 <div class="info"><div class="k" id="dref"></div><h2 id="dname"></h2><div class="hk" id="dhook"></div><p id="ddesc" style="margin:0;color:var(--mut)"></p><ul id="dperks"></ul>
 <div id="dcol"></div><div id="dsz"></div>
 <div class="qty"><button type="button" id="qm" aria-label="Menos">−</button><output id="qv">1</output><button type="button" id="qp" aria-label="Más">+</button></div>
 <button class="btn p" id="dadd" type="button">Agregar a mi pedido</button><div class="free">🚚 Delivery gratis hasta tu puerta</div></div></div></div></dialog>
 
+<dialog id="welcome" aria-label="Promoción de bienvenida"><div class="wtop"><button class="x" id="wx" type="button" aria-label="Cerrar">×</button><div class="sub">¡Bienvenido a Traviesitos!</div><div class="big">10% OFF</div><div class="sub">en tu primera compra</div></div><div class="wb"><p>Elige los juguetes y la ropa que más te gusten. El descuento se aplica solo al confirmar tu pedido.</p><span class="code">BIENVENIDO10</span><button class="btn p" id="wgo" type="button" style="width:100%">¡Quiero mi 10%!</button><span class="small">🚚 Y el delivery es gratis</span></div></dialog>
 <div class="shade" id="shade" hidden></div>
 <aside class="cart" id="cart" aria-label="Mi pedido"><div class="ch"><h2 id="ctitle">Mi pedido</h2><button class="x" style="position:static" id="cx" type="button" aria-label="Cerrar">×</button></div>
 <div class="steps" id="stp" hidden></div>
 <div class="cl" id="cl"></div>
 <div class="cf" id="cf"></div></aside>
+<script src="config.js"></script>
 <script src="data.js"></script>
 <script>
-const CONFIG={whatsapp:'584242958656',endpoint:''}; // whatsapp: número internacional sin +, ej. 584121234567 · endpoint: URL opcional que recibe el pedido en JSON
+const CONFIG=Object.assign({whatsapp:'584242958656',endpoint:''},window.TRV_CONFIG||{});
 const SECS=[['Control remoto','--pink'],['Monopatines y patines','--green'],['Videojuegos y héroes','--sky'],['Muñecas','--orchid'],['Coleccionables','--sun'],['Ropa de niña','--pink'],['Ropa de niño','--sky'],['Morrales','--green']];
 const AC=Object.fromEntries(SECS);
 document.getElementById('strip').innerHTML=['--pink','--green','--sky','--orchid','--sun','--pink','--green','--sky','--orchid','--sun','--pink','--green'].map(c=>`<i style="background:var(${c})"></i>`).join('');
 const $=id=>document.getElementById(id);
+const first=(()=>{try{return !localStorage.getItem('trv_compro')}catch(e){return true}})();
+{const t=['🎁 <b>10% OFF</b> en tu primera compra','🚚 Delivery <b>GRATIS</b> hasta tu puerta','🎥 Mira el video de cada producto','💬 Atención por WhatsApp +58 424 295 8656'];const h=t.map(x=>`<span>${x}</span>`).join('');document.querySelector('#promo .track').innerHTML=h+h;}
+
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 let cart=[];try{cart=JSON.parse(localStorage.getItem('trv_cart')||'[]')}catch(e){}
 const save=()=>{try{localStorage.setItem('trv_cart',JSON.stringify(cart))}catch(e){}};
@@ -156,24 +187,25 @@ function render(){const L=$('list');L.innerHTML='';let any=0;
   const h=document.createElement('h2');h.className='sec';h.style.setProperty('--ac',`var(${ac})`);h.innerHTML=`${s} <small>${items.length} productos</small>`;L.appendChild(h);
   const g=document.createElement('div');g.className='grid';
   items.forEach(p=>{const t=document.createElement('div');t.className='tile'+(p.f&&!q?' big':'');t.tabIndex=0;t.style.setProperty('--ac',`var(${ac})`);const n=inCart(p.sku);
-   t.innerHTML=`<div class="ph"><img loading="lazy" src="img/${p.i[0]}" alt="${esc(p.n)}"><div class="bdg">${p.few?'<span class="hot">Pocas unidades</span>':''}${p.v.length?'<span>▶ Video</span>':''}</div></div>
-   <div class="bd"><h3>${esc(p.n)}</h3><div class="hk">${esc(p.h)}</div>${p.co.length>1?`<div class="dots">${p.co.length} colores disponibles</div>`:''}${!p.sp&&p.sz.length>1?`<div class="dots">${p.s==='Morrales'?'Tamaños':'Tallas'} ${esc(p.sz[0])} a ${esc(p.sz[p.sz.length-1])}</div>`:''}
+   t.innerHTML=`<div class="ph" style="--bgi:url(img/${p.i[0]})"><img loading="lazy" src="img/${p.i[0]}" alt="${esc(p.n)}"><div class="bdg">${p.few?'<span class="hot">Pocas unidades</span>':''}${p.v.length?'<span>▶ Video</span>':''}</div></div>
+   <div class="bd"><h3>${esc(p.n)}</h3><div class="hk">${esc(p.h)}</div>${p.co.length>1?`<div class="dots">${p.co.length} colores disponibles</div>`:''}${!p.sp&&p.sz.length>1?`<div class="dots">${p.s==='Morrales'?'Tamaños':'Tallas'} ${p.sz.length<=4?esc(p.sz.join(' · ')):esc(p.sz[0])+' a '+esc(p.sz[p.sz.length-1])}</div>`:''}
    <div class="meta"><span>Ref. ${p.sku}</span><button class="add${n?' in':''}" type="button">${n?'En tu pedido ('+n+')':needsPick(p)?'Elegir y pedir':'Pedir'}</button></div></div>`;
    t.onclick=e=>{if(e.target.classList.contains('add')&&!needsPick(p)){e.stopPropagation();addItem(p,1,'');openCart();return}open(p)};
    t.onkeydown=e=>{if(e.key==='Enter')open(p)};g.appendChild(t)});L.appendChild(g)});
  if(!any)L.innerHTML='<p class="empty">No encontramos productos con esa búsqueda.</p>';
  $('count').textContent=cart.reduce((a,c)=>a+c.q,0);}
 let cur=null,qv=1,selC=null,selS=null;
-function showMedia(k){const p=cur,m=media[k];[...$('dth').children].forEach((b,i)=>b.setAttribute('aria-current',i===k));
- if(m.t==='v'){$('dimg').hidden=true;const v=$('dvid');v.hidden=false;v.src='vid/'+m.f;v.play().catch(()=>{})}else{const v=$('dvid');v.pause();v.hidden=true;$('dimg').hidden=false;$('dimg').src=m.src}}
+function stopVid(){const v=$('dvid');try{v.pause()}catch(e){}v.removeAttribute('src');v.load();v.hidden=true}
+function showMedia(k){const p=cur,m=media[k];if(!m)return;[...$('dth').children].forEach((b,i)=>b.setAttribute('aria-current',i===k));
+ if(m.t==='v'){$('dimg').hidden=true;const v=$('dvid');v.hidden=false;v.muted=true;v.src='vid/'+m.f;v.currentTime=0;const pr=v.play();if(pr)pr.catch(()=>{})}else{stopVid();$('dimg').hidden=false;$('dimg').src=m.src}}
 let media=[];
-function open(p){cur=p;qv=1;$('qv').textContent=1;selC=p.co.length===1?p.co[0][0]:null;selS=p.sz.length===1?p.sz[0]:null;
+function open(p){stopVid();cur=p;qv=1;$('qv').textContent=1;selC=p.co.length===1?p.co[0][0]:null;selS=p.sz.length===1?p.sz[0]:null;
  const dlg=$('dlg');dlg.style.setProperty('--ac',`var(${AC[p.s]})`);
  $('dref').textContent=`${p.c} · Ref. ${p.sku}`;$('dname').textContent=p.n;$('dhook').textContent=p.h;$('ddesc').textContent=p.d;$('dperks').innerHTML=p.pk.map(x=>`<li>${esc(x)}</li>`).join('');$('dperks').hidden=!p.pk.length;
  media=[...p.v.map(f=>({t:'v',f})),...p.i.map(f=>({t:'i',src:'img/'+f}))];
  $('dth').innerHTML=media.length>1?media.map((m,k)=>`<button type="button" aria-label="${m.t==='v'?'Ver video':'Foto '+(k+1)}"><img src="${m.t==='v'?'img/'+p.i[0]:m.src}" alt="">${m.t==='v'?'<span class="pl">▶</span>':''}</button>`).join(''):'';
  [...$('dth').children].forEach((b,k)=>b.onclick=()=>showMedia(k));
- $('dimg').alt=p.n;showMedia(p.v.length?media.findIndex(m=>m.t==='i'):0);drawPick();dlg.showModal()}
+ $('dimg').alt=p.n;$('dimg').removeAttribute('src');drawPick();dlg.showModal();showMedia(0)}
 function drawPick(){const p=cur;
  $('dcol').innerHTML=p.co.length>1?`<div class="pkr"><b>Color: ${esc(selC||'elige uno')}</b><div class="opts">${p.co.map((c,k)=>`<button type="button" class="opt" data-c="${k}" aria-pressed="${selC===c[0]}">${c[1]?`<img src="sw/${c[1]}" alt="">`:''}${esc(c[0])}</button>`).join('')}</div></div>`:(p.co.length===1?`<div class="small">Color: ${esc(p.co[0][0])}</div>`:'');
  $('dsz').innerHTML=p.sp?(p.sz.length?`<div class="pkr"><b>Detalles</b><div class="opts">${p.sz.map(s=>`<span class="opt" style="cursor:default">${esc(s)}</span>`).join('')}</div></div>`:''):(p.sz.length>1?`<div class="pkr"><b>${p.s==='Morrales'?'Tamaño':'Talla'}: ${esc(selS||'elige una')}</b><div class="opts">${p.sz.map((s,k)=>`<button type="button" class="opt" data-s="${k}" aria-pressed="${selS===s}">${esc(s)}</button>`).join('')}</div></div>`:(p.sz.length?`<div class="small">Talla: ${esc(p.sz[0])}</div>`:''));
@@ -181,7 +213,7 @@ function drawPick(){const p=cur;
  $('dsz').querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{selS=p.sz[+b.dataset.s];drawPick()});
  const miss=(p.co.length>1&&!selC)?'Elige un color':(!p.sp&&p.sz.length>1&&!selS)?(p.s==='Morrales'?'Elige un tamaño':'Elige una talla'):'';
  $('dadd').textContent=miss||'Agregar a mi pedido';$('dadd').disabled=!!miss;}
-$('dx').onclick=()=>{$('dvid').pause();$('dlg').close()};$('dlg').addEventListener('close',()=>$('dvid').pause());
+$('dx').onclick=()=>$('dlg').close();$('dlg').addEventListener('close',stopVid);
 $('dlg').onclick=e=>{if(e.target===$('dlg'))$('dlg').close()};
 $('qm').onclick=()=>{qv=Math.max(1,qv-1);$('qv').textContent=qv};$('qp').onclick=()=>{qv++;$('qv').textContent=qv};
 $('dadd').onclick=()=>{const p=cur;const parts=[];if(p.co.length>1)parts.push('Color '+selC);if(!p.sp&&p.sz.length>1&&selS)parts.push((p.s==='Morrales'?'Tamaño ':'Talla ')+selS);addItem(p,qv,parts.join(' · '));$('dlg').close();openCart()};
@@ -191,10 +223,10 @@ let step='cart',order=null;
 function stp(n){const b=$('stp');if(!b)return;b.innerHTML=['Mi pedido','Mis datos','¡Listo!'].map((t,i)=>`<span class="${i<=n?'on':''}">${i+1}. ${t}</span>`).join('');b.hidden=!cart.length&&step!=='done'}
 function drawCart(){const C=$('cl'),F=$('cf');stp(step==='cart'?0:step==='form'?1:2);
  if(step==='done'&&order){$('ctitle').textContent='¡Gracias!';const n=order.items.reduce((a,c)=>a+c.q,0);
-  C.innerHTML=`<div class="thx"><img class="lg" src="logo.png" alt="Traviesitos Children"><h3>¡Gracias por tu compra y por elegirnos, ${esc(order.cliente.nombre.split(' ')[0])}!</h3><p>Tu pedido ya está registrado. Te escribimos por WhatsApp para confirmar la entrega.</p><span class="oid">Pedido ${order.id}</span></div>
+  C.innerHTML=`<div class="thx"><img class="lg" src="logo.png" alt="Traviesitos Children"><h3>¡Gracias por tu compra y por elegirnos!</h3><p>Tu pedido ya está registrado. Te escribimos por WhatsApp para confirmar la entrega.</p><span class="oid">Pedido ${order.id}</span></div>
   <div class="sum">${order.items.map(i=>{const p=P(i.sku);return `<div class="li"><img src="img/${p.i[0]}" alt=""><div><div style="font-weight:800">${esc(i.nombre)}</div><div class="small">Ref. ${i.sku}${i.opcion?' · '+esc(i.opcion):''}</div></div><b>× ${i.q}</b></div>`}).join('')}</div>
-  <div class="free" style="margin-top:10px">🚚 ${n} ${n===1?'artículo':'artículos'} · Delivery gratis hasta tu puerta</div>
-  <div class="who"><b>${esc(order.cliente.nombre)}</b><span>📞 ${esc(order.cliente.telefono)}</span><span>✉️ ${esc(order.cliente.correo)}</span><span>📍 ${esc(order.cliente.zona)} – ${esc(order.cliente.direccion)}</span><span>🕒 ${esc(order.cliente.horario)}</span></div>`;
+  ${order.promo?'<div class="disc" style="margin-top:10px">🎁 Tu 10% de descuento de primera compra está incluido</div>':''}<div class="free" style="margin-top:10px">🚚 ${n} ${n===1?'artículo':'artículos'} · Delivery gratis hasta tu puerta</div>
+  <div class="who"><b>Datos de entrega</b><span>📞 ${esc(order.cliente.telefono)}</span><span>✉️ ${esc(order.cliente.correo)}</span><span>📍 ${esc(order.cliente.direccion)}</span></div>`;
   const txt=msg(order);F.innerHTML=`<a class="btn wa" id="send" href="https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(txt)}" target="_blank" rel="noopener">Confirmar pedido por WhatsApp</a><button class="btn s" id="copy" type="button">Copiar pedido</button><div class="small" id="cmsg" style="text-align:center">¿Dudas? Escríbenos al +58 424 295 8656 · IG y TikTok @traviesitoschidrens</div><button class="btn s" id="newo" type="button">Seguir comprando</button>`;
   $('copy').onclick=()=>navigator.clipboard.writeText(txt).then(()=>$('cmsg').textContent='Pedido copiado. Pégalo en el chat de WhatsApp.').catch(()=>{$('cmsg').textContent=txt});
   $('newo').onclick=()=>{step='cart';order=null;closeCart();drawCart()};return}
@@ -202,29 +234,40 @@ function drawCart(){const C=$('cl'),F=$('cf');stp(step==='cart'?0:step==='form'?
  C.innerHTML=cart.length?cart.map((c,k)=>{const p=P(c.sku);return `<div class="ci"><img src="img/${p.i[0]}" alt=""><div><div class="n">${esc(p.n)}</div><div class="r">Ref. ${p.sku}${c.note?' · '+esc(c.note):''}</div></div><div class="qty"><button type="button" data-k="${k}" data-d="-1" aria-label="Menos">−</button><output>${c.q}</output><button type="button" data-k="${k}" data-d="1" aria-label="Más">+</button></div></div>`}).join(''):'<p class="empty">Tu pedido está vacío.<br>Toca “Pedir” en cualquier producto.</p>';
  C.querySelectorAll('button[data-k]').forEach(b=>b.onclick=()=>{const c=cart[+b.dataset.k];c.q+=+b.dataset.d;if(c.q<1)cart.splice(+b.dataset.k,1);save();render();drawCart()});
  if(!cart.length){F.innerHTML='';return}
- if(step==='cart'){F.innerHTML=`<div class="free">🚚 Delivery gratis hasta tu puerta</div><div class="small">${cart.reduce((a,c)=>a+c.q,0)} artículos en tu pedido</div><button class="btn p" id="go" type="button">Comprar ahora</button>`;$('go').onclick=()=>{step='form';drawCart()};return}
+ if(step==='cart'){F.innerHTML=`${first?'<div class="disc">🎁 10% de descuento por tu primera compra (BIENVENIDO10)</div>':''}<div class="free">🚚 Delivery gratis hasta tu puerta</div><div class="small">${cart.reduce((a,c)=>a+c.q,0)} artículos en tu pedido</div><button class="btn p" id="go" type="button">Comprar ahora</button>`;$('go').onclick=()=>{step='form';drawCart()};return}
  let d={};try{d=JSON.parse(localStorage.getItem('trv_cliente')||'{}')}catch(e){}
- F.innerHTML=`<form class="ck" id="ck"><div style="font-family:var(--fd);font-size:18px;font-weight:700">¿A quién le llevamos la alegría?</div><div class="small">Solo necesitamos tus datos de contacto para coordinar el delivery gratis.</div>
- <div class="fld"><label for="f_n">Nombre y apellido *</label><input id="f_n" required autocomplete="name" value="${esc(d.nombre||'')}"></div>
- <div class="row2"><div class="fld"><label for="f_t">Teléfono / WhatsApp *</label><input id="f_t" type="tel" required inputmode="tel" autocomplete="tel" pattern="[0-9+()\\s\\-]{10,16}" title="Ej.: 0412-1234567" placeholder="0412-1234567" value="${esc(d.telefono||'')}"></div>
- <div class="fld"><label for="f_e">Correo electrónico *</label><input id="f_e" type="email" required autocomplete="email" placeholder="tucorreo@gmail.com" value="${esc(d.correo||'')}"></div></div>
- <div class="fld"><label for="f_c">Cédula (opcional)</label><input id="f_c" inputmode="numeric" value="${esc(d.cedula||'')}"></div>
- <div class="fld"><label for="f_z">Zona o urbanización *</label><input id="f_z" required placeholder="Ej.: Los Palos Grandes" value="${esc(d.zona||'')}"></div>
- <div class="fld"><label for="f_d">Dirección de entrega y punto de referencia *</label><textarea id="f_d" rows="2" required>${esc(d.direccion||'')}</textarea></div>
- <div class="fld"><label for="f_h">Horario preferido</label><select id="f_h"><option>Mañana (8 am – 12 m)</option><option>Tarde (12 m – 5 pm)</option><option>Noche (5 pm – 8 pm)</option></select></div>
- <div class="secu">🔒 Tus datos solo se usan para coordinar tu entrega.</div><button class="btn p" type="submit" id="sub">Confirmar mi compra</button><button class="btn s" type="button" id="back">Volver</button></form>`;
+ const nArt=cart.reduce((a,c)=>a+c.q,0);
+ C.innerHTML=`<form class="ck" id="ck" novalidate style="padding:12px 0 8px"><div style="font-family:var(--fd);font-size:19px;font-weight:700;color:var(--navyt)">¿A dónde te llevamos la alegría?</div><div class="small">Solo 3 datos y listo. El delivery es gratis.</div>
+ <div class="fld"><label for="f_t">Teléfono / WhatsApp *</label><input id="f_t" name="tel" type="tel" required inputmode="tel" autocomplete="tel" placeholder="0412-1234567" value="${esc(d.telefono||'')}"><span class="err" id="e_t" hidden>Escribe un teléfono válido (ej.: 0412-1234567).</span></div>
+ <div class="fld"><label for="f_e">Correo electrónico *</label><input id="f_e" name="email" type="email" required inputmode="email" autocomplete="email" placeholder="tucorreo@gmail.com" value="${esc(d.correo||'')}"><span class="err" id="e_e" hidden>Escribe un correo válido.</span></div>
+ <div class="fld"><label for="f_d">Dirección de envío *</label><textarea id="f_d" name="dir" rows="3" required autocomplete="street-address" placeholder="Urbanización, calle, edificio o casa y un punto de referencia">${esc(d.direccion||'')}</textarea><span class="err" id="e_d" hidden>Escribe la dirección de envío.</span></div>
+ <div class="secu">🔒 Tus datos solo se usan para coordinar tu entrega.</div>
+ <div class="ord" style="margin-top:4px"><span class="small" style="font-weight:800;color:var(--fg)">Tu pedido · ${nArt} ${nArt===1?'artículo':'artículos'}</span>${cart.map(c=>{const p=P(c.sku);return `<span class="small">${c.q} × ${esc(p.n)}${c.note?' · '+esc(c.note):''}</span>`}).join('')}</div></form>`;
+ F.innerHTML=`${first?'<div class="disc">🎁 10% de descuento de primera compra incluido</div>':''}<div class="free">🚚 Delivery gratis hasta tu puerta</div><button class="btn p" type="submit" form="ck" id="sub">Confirmar mi compra</button><button class="btn s" type="button" id="back">Volver a mi pedido</button>`;
+ C.scrollTop=0;
  $('back').onclick=()=>{step='cart';drawCart()};
- $('ck').onsubmit=async e=>{e.preventDefault();$('sub').disabled=true;$('sub').textContent='Registrando tu pedido…';const cli={nombre:$('f_n').value.trim(),telefono:$('f_t').value.trim(),correo:$('f_e').value.trim(),cedula:$('f_c').value.trim(),zona:$('f_z').value.trim(),direccion:$('f_d').value.trim(),horario:$('f_h').value};
+ $('ck').onsubmit=async e=>{e.preventDefault();
+  const tel=$('f_t').value.trim(),mail=$('f_e').value.trim(),dir=$('f_d').value.trim();
+  const okT=tel.replace(/\D/g,'').length>=10,okE=/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(mail),okD=dir.length>=8;
+  $('e_t').hidden=okT;$('e_e').hidden=okE;$('e_d').hidden=okD;
+  if(!(okT&&okE&&okD)){const bad=!okT?'f_t':!okE?'f_e':'f_d';$(bad).focus();$(bad).scrollIntoView({block:'center'});return}
+  $('sub').disabled=true;$('sub').textContent='Registrando tu pedido…';
+  const cli={telefono:tel,correo:mail,direccion:dir};
   try{localStorage.setItem('trv_cliente',JSON.stringify(cli))}catch(e){}
   const now=new Date();const id='TRV-'+String(now.getFullYear()).slice(2)+String(now.getMonth()+1).padStart(2,'0')+String(now.getDate()).padStart(2,'0')+'-'+Math.random().toString(36).slice(2,6).toUpperCase();
-  order={id,fecha:now.toISOString(),cliente:cli,delivery:'Gratis',items:cart.map(c=>({sku:c.sku,nombre:P(c.sku).n,opcion:c.note,q:c.q}))};
-  if(CONFIG.endpoint){try{await fetch(CONFIG.endpoint,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(order)})}catch(err){}}
-  cart=[];save();render();step='done';drawCart()};}
-function msg(o){return `🧸 *Pedido ${o.id}* – Traviesitos Children\n\n`+o.items.map(i=>`• ${i.q} x ${i.nombre} (Ref. ${i.sku})${i.opcion?' – '+i.opcion:''}`).join('\n')+`\n\nTotal de artículos: ${o.items.reduce((a,c)=>a+c.q,0)}\n🚚 Delivery: GRATIS\n\n*Datos de entrega*\nNombre: ${o.cliente.nombre}\nTeléfono: ${o.cliente.telefono}\nCorreo: ${o.cliente.correo}${o.cliente.cedula?'\nCédula: '+o.cliente.cedula:''}\nZona: ${o.cliente.zona}\nDirección: ${o.cliente.direccion}\nHorario: ${o.cliente.horario}\n\n¡Gracias! Quedo atento(a) a la confirmación.`}
+  order={id,fecha:now.toISOString(),cliente:cli,delivery:'Gratis',promo:first?'BIENVENIDO10 · 10% primera compra':'',items:cart.map(c=>({sku:c.sku,nombre:P(c.sku).n,opcion:c.note,q:c.q}))};
+  if(CONFIG.endpoint){try{await fetch(CONFIG.endpoint,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(order)})}catch(err){}}
+  try{localStorage.setItem('trv_compro','1')}catch(e){}cart=[];save();render();step='done';drawCart();$('cl').scrollTop=0};}
+function msg(o){return `🧸 *Pedido ${o.id}* – Traviesitos Children\n\n`+o.items.map(i=>`• ${i.q} x ${i.nombre} (Ref. ${i.sku})${i.opcion?' – '+i.opcion:''}`).join('\n')+`\n\nTotal de artículos: ${o.items.reduce((a,c)=>a+c.q,0)}\n🚚 Delivery: GRATIS${o.promo?'\n🎁 Descuento: '+o.promo:''}\n\n*Datos de entrega*\nTeléfono: ${o.cliente.telefono}\nCorreo: ${o.cliente.correo}\nDirección: ${o.cliente.direccion}\n\n¡Gracias! Quedo atento(a) a la confirmación.`}
 function openCart(){drawCart();$('cart').classList.add('open');$('shade').hidden=false}
 function closeCart(){$('cart').classList.remove('open');$('shade').hidden=true}
 $('openCart').onclick=()=>{if(step==='done'&&!cart.length){}openCart()};$('cx').onclick=closeCart;$('shade').onclick=closeCart;
 render();
+function showWelcome(){try{$('welcome').showModal()}catch(e){}}
+$('wx').onclick=()=>$('welcome').close();$('wgo').onclick=()=>$('welcome').close();$('welcome').onclick=e=>{if(e.target===$('welcome'))$('welcome').close()};
+$('promo').onclick=showWelcome;
+if(!first){$('offer').hidden=true}
+else{let seen=false;try{seen=!!sessionStorage.getItem('trv_wel')}catch(e){}if(!seen){setTimeout(()=>{if(!document.querySelector('dialog[open]'))showWelcome();try{sessionStorage.setItem('trv_wel','1')}catch(e){}},1800)}}
 </script>
 
 </body></html>
