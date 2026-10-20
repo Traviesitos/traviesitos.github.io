@@ -268,7 +268,7 @@ render();
 function showWelcome(){try{$('welcome').showModal()}catch(e){}}
 $('wx').onclick=()=>$('welcome').close();$('wgo').onclick=()=>$('welcome').close();$('welcome').onclick=e=>{if(e.target===$('welcome'))$('welcome').close()};
 $('promo').onclick=showWelcome;
-{let seen=false;try{seen=!!sessionStorage.getItem('trv_wel')}catch(e){}if(!seen){setTimeout(()=>{if(!document.querySelector('dialog[open]'))showWelcome();try{sessionStorage.setItem('trv_wel','1')}catch(e){}},1800)}}
+setTimeout(()=>{if(!document.querySelector('dialog[open]'))showWelcome()},1200);
 </script>
 
 </body></html>
