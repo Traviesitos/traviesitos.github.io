@@ -1,5 +1,13 @@
 name: Importar catalogo
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+    inputs:
+      ids:
+        description: IDs de Google Drive de las partes, en orden y separados por espacio
+        required: true
+      sha:
+        description: SHA-256 del zip completo
+        required: true
 permissions:
   contents: write
 jobs:
@@ -8,21 +16,26 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Descargar y descomprimir
+        env:
+          IDS: ${{ inputs.ids }}
+          SHA: ${{ inputs.sha }}
         run: |
           set -e
-          for id in 1RIAmAxSKofkdXuMzUVFgfGSkhuVQaZ6W 1v6ydQ7EncMoCJOfsWiYNsLd0kLlZuFgm 1jeoCiNVI5PRrOp35UVnbFAAc2UkCP5Og 1Vou_goxQNkB0Sy33YLCOQow_YDCYKIJq; do
-            curl -sSL --fail -o "p_$id" "https://drive.usercontent.google.com/download?id=$id&export=download&confirm=t"
-            ls -l "p_$id"
+          rm -f site.zip
+          for id in $IDS; do
+            curl -sSL --fail -o p.part "https://drive.usercontent.google.com/download?id=$id&export=download&confirm=t"
+            ls -l p.part
+            cat p.part >> site.zip
           done
-          cat p_1RIAmAxSKofkdXuMzUVFgfGSkhuVQaZ6W p_1v6ydQ7EncMoCJOfsWiYNsLd0kLlZuFgm p_1jeoCiNVI5PRrOp35UVnbFAAc2UkCP5Og p_1Vou_goxQNkB0Sy33YLCOQow_YDCYKIJq > site.zip
-          echo "c3e6f289f9afa930d6ac6591ddc2bdc5b101d4abc235f3a0c2f79d1ccf0683d2  site.zip" | sha256sum -c -
+          echo "$SHA  site.zip" | sha256sum -c -
+          rm -rf img sw vid
           unzip -o -q site.zip -d .
-          rm -f site.zip p_*
+          rm -f site.zip p.part
           touch .nojekyll
       - name: Guardar en el repositorio
         run: |
           git config user.name "Traviesitos"
           git config user.email "traviesitos@users.noreply.github.com"
           git add -A
-          git commit -m "Catalogo Traviesitos Children"
+          git commit -m "Actualizar catalogo" || echo "sin cambios"
           git push
