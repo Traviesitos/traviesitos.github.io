@@ -91,6 +91,15 @@ aside.cart.open{transform:none}
 .ci img{width:56px;height:56px;border-radius:10px;object-fit:cover}
 .ci .n{font-weight:800;font-size:14px;line-height:1.25}.ci .r{font-size:12px;color:var(--mut)}
 .cf{padding:14px 20px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:10px}
+.steps{display:flex;gap:6px;padding:10px 20px 0;font-size:12px;font-weight:800;color:var(--mut)}.steps span{flex:1;text-align:center;padding:6px 4px;border-radius:999px;background:var(--bg)}.steps span.on{background:var(--pink);color:#fff}
+.secu{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--mut);font-weight:700}
+.thx{text-align:center;padding:18px 4px 6px;display:flex;flex-direction:column;align-items:center;gap:8px}
+.thx img.lg{width:120px;height:auto}
+.thx h3{font-family:var(--fd);font-size:24px;line-height:1.15;margin:0;color:var(--navyt);text-wrap:balance}
+.thx p{margin:0;color:var(--mut);font-size:14px;max-width:34ch}
+.thx .oid{font-family:var(--fd);font-size:15px;background:var(--bg);border:1px dashed var(--pink);color:var(--pink);border-radius:999px;padding:6px 14px}
+.sum{display:flex;flex-direction:column;gap:8px;margin-top:6px}.sum .li{display:grid;grid-template-columns:44px 1fr auto;gap:10px;align-items:center;font-size:13.5px}.sum .li img{width:44px;height:44px;border-radius:8px;object-fit:cover}.sum .li b{font-variant-numeric:tabular-nums}
+.who{background:var(--bg);border-radius:14px;padding:12px 14px;font-size:13.5px;display:flex;flex-direction:column;gap:3px;margin-top:6px}
 form.ck{display:flex;flex-direction:column;gap:10px}
 .fld{display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:700}
 .fld input,.fld select,.fld textarea{border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:12px;padding:10px 12px;font:inherit;font-weight:400}
@@ -124,6 +133,7 @@ footer .wrap{padding-block:20px;display:flex;justify-content:space-between;gap:1
 
 <div class="shade" id="shade" hidden></div>
 <aside class="cart" id="cart" aria-label="Mi pedido"><div class="ch"><h2 id="ctitle">Mi pedido</h2><button class="x" style="position:static" id="cx" type="button" aria-label="Cerrar">×</button></div>
+<div class="steps" id="stp" hidden></div>
 <div class="cl" id="cl"></div>
 <div class="cf" id="cf"></div></aside>
 <script src="data.js"></script>
@@ -178,33 +188,39 @@ $('dadd').onclick=()=>{const p=cur;const parts=[];if(p.co.length>1)parts.push('C
 function addItem(p,n,note){const f=cart.find(c=>c.sku===p.sku&&c.note===note);if(f)f.q+=n;else cart.push({sku:p.sku,q:n,note});save();render();drawCart()}
 const P=sku=>PRODUCTS.find(x=>x.sku===sku);
 let step='cart',order=null;
-function drawCart(){const C=$('cl'),F=$('cf');
- if(step==='done'&&order){$('ctitle').textContent='Pedido '+order.id;C.innerHTML=`<div class="ord" style="margin-top:12px"><b>¡Pedido ${order.id} creado!</b><span>${order.items.reduce((a,c)=>a+c.q,0)} artículos · Delivery gratis</span><span>${esc(order.cliente.nombre)} · ${esc(order.cliente.telefono)}</span><span>${esc(order.cliente.zona)} – ${esc(order.cliente.direccion)}</span><span class="small">Envíanos el pedido por WhatsApp para confirmar precio, disponibilidad y la hora de entrega.</span></div>`;
-  const txt=msg(order);F.innerHTML=`<a class="btn wa" id="send" href="https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(txt)}" target="_blank" rel="noopener">Enviar pedido ${order.id} por WhatsApp</a><button class="btn s" id="copy" type="button">Copiar pedido</button>${CONFIG.whatsapp?`<div class="small">WhatsApp: +${CONFIG.whatsapp}</div>`:''}<div class="small" id="cmsg"></div><button class="btn s" id="newo" type="button">Hacer otro pedido</button>`;
+function stp(n){const b=$('stp');if(!b)return;b.innerHTML=['Mi pedido','Mis datos','¡Listo!'].map((t,i)=>`<span class="${i<=n?'on':''}">${i+1}. ${t}</span>`).join('');b.hidden=!cart.length&&step!=='done'}
+function drawCart(){const C=$('cl'),F=$('cf');stp(step==='cart'?0:step==='form'?1:2);
+ if(step==='done'&&order){$('ctitle').textContent='¡Gracias!';const n=order.items.reduce((a,c)=>a+c.q,0);
+  C.innerHTML=`<div class="thx"><img class="lg" src="logo.png" alt="Traviesitos Children"><h3>¡Gracias por tu compra y por elegirnos, ${esc(order.cliente.nombre.split(' ')[0])}!</h3><p>Tu pedido ya está registrado. Te escribimos por WhatsApp para confirmar la entrega.</p><span class="oid">Pedido ${order.id}</span></div>
+  <div class="sum">${order.items.map(i=>{const p=P(i.sku);return `<div class="li"><img src="img/${p.i[0]}" alt=""><div><div style="font-weight:800">${esc(i.nombre)}</div><div class="small">Ref. ${i.sku}${i.opcion?' · '+esc(i.opcion):''}</div></div><b>× ${i.q}</b></div>`}).join('')}</div>
+  <div class="free" style="margin-top:10px">🚚 ${n} ${n===1?'artículo':'artículos'} · Delivery gratis hasta tu puerta</div>
+  <div class="who"><b>${esc(order.cliente.nombre)}</b><span>📞 ${esc(order.cliente.telefono)}</span><span>✉️ ${esc(order.cliente.correo)}</span><span>📍 ${esc(order.cliente.zona)} – ${esc(order.cliente.direccion)}</span><span>🕒 ${esc(order.cliente.horario)}</span></div>`;
+  const txt=msg(order);F.innerHTML=`<a class="btn wa" id="send" href="https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(txt)}" target="_blank" rel="noopener">Confirmar pedido por WhatsApp</a><button class="btn s" id="copy" type="button">Copiar pedido</button><div class="small" id="cmsg" style="text-align:center">¿Dudas? Escríbenos al +58 424 295 8656 · IG y TikTok @traviesitoschidrens</div><button class="btn s" id="newo" type="button">Seguir comprando</button>`;
   $('copy').onclick=()=>navigator.clipboard.writeText(txt).then(()=>$('cmsg').textContent='Pedido copiado. Pégalo en el chat de WhatsApp.').catch(()=>{$('cmsg').textContent=txt});
-  $('newo').onclick=()=>{step='cart';order=null;drawCart()};return}
+  $('newo').onclick=()=>{step='cart';order=null;closeCart();drawCart()};return}
  $('ctitle').textContent='Mi pedido';
  C.innerHTML=cart.length?cart.map((c,k)=>{const p=P(c.sku);return `<div class="ci"><img src="img/${p.i[0]}" alt=""><div><div class="n">${esc(p.n)}</div><div class="r">Ref. ${p.sku}${c.note?' · '+esc(c.note):''}</div></div><div class="qty"><button type="button" data-k="${k}" data-d="-1" aria-label="Menos">−</button><output>${c.q}</output><button type="button" data-k="${k}" data-d="1" aria-label="Más">+</button></div></div>`}).join(''):'<p class="empty">Tu pedido está vacío.<br>Toca “Pedir” en cualquier producto.</p>';
  C.querySelectorAll('button[data-k]').forEach(b=>b.onclick=()=>{const c=cart[+b.dataset.k];c.q+=+b.dataset.d;if(c.q<1)cart.splice(+b.dataset.k,1);save();render();drawCart()});
  if(!cart.length){F.innerHTML='';return}
- if(step==='cart'){F.innerHTML=`<div class="free">🚚 Delivery gratis hasta tu puerta</div><button class="btn p" id="go" type="button">Continuar con mis datos</button>`;$('go').onclick=()=>{step='form';drawCart()};return}
+ if(step==='cart'){F.innerHTML=`<div class="free">🚚 Delivery gratis hasta tu puerta</div><div class="small">${cart.reduce((a,c)=>a+c.q,0)} artículos en tu pedido</div><button class="btn p" id="go" type="button">Comprar ahora</button>`;$('go').onclick=()=>{step='form';drawCart()};return}
  let d={};try{d=JSON.parse(localStorage.getItem('trv_cliente')||'{}')}catch(e){}
- F.innerHTML=`<form class="ck" id="ck"><div class="small">Datos para coordinar tu delivery gratis</div>
- <div class="fld"><label for="f_n">Nombre y apellido</label><input id="f_n" required autocomplete="name" value="${esc(d.nombre||'')}"></div>
- <div class="row2"><div class="fld"><label for="f_t">Teléfono / WhatsApp</label><input id="f_t" required inputmode="tel" autocomplete="tel" placeholder="0412-1234567" value="${esc(d.telefono||'')}"></div>
- <div class="fld"><label for="f_c">Cédula (opcional)</label><input id="f_c" inputmode="numeric" value="${esc(d.cedula||'')}"></div></div>
- <div class="fld"><label for="f_z">Zona o urbanización</label><input id="f_z" required placeholder="Ej.: Los Palos Grandes" value="${esc(d.zona||'')}"></div>
- <div class="fld"><label for="f_d">Dirección de entrega y punto de referencia</label><textarea id="f_d" rows="2" required>${esc(d.direccion||'')}</textarea></div>
+ F.innerHTML=`<form class="ck" id="ck"><div style="font-family:var(--fd);font-size:18px;font-weight:700">¿A quién le llevamos la alegría?</div><div class="small">Solo necesitamos tus datos de contacto para coordinar el delivery gratis.</div>
+ <div class="fld"><label for="f_n">Nombre y apellido *</label><input id="f_n" required autocomplete="name" value="${esc(d.nombre||'')}"></div>
+ <div class="row2"><div class="fld"><label for="f_t">Teléfono / WhatsApp *</label><input id="f_t" type="tel" required inputmode="tel" autocomplete="tel" pattern="[0-9+()\\s\\-]{10,16}" title="Ej.: 0412-1234567" placeholder="0412-1234567" value="${esc(d.telefono||'')}"></div>
+ <div class="fld"><label for="f_e">Correo electrónico *</label><input id="f_e" type="email" required autocomplete="email" placeholder="tucorreo@gmail.com" value="${esc(d.correo||'')}"></div></div>
+ <div class="fld"><label for="f_c">Cédula (opcional)</label><input id="f_c" inputmode="numeric" value="${esc(d.cedula||'')}"></div>
+ <div class="fld"><label for="f_z">Zona o urbanización *</label><input id="f_z" required placeholder="Ej.: Los Palos Grandes" value="${esc(d.zona||'')}"></div>
+ <div class="fld"><label for="f_d">Dirección de entrega y punto de referencia *</label><textarea id="f_d" rows="2" required>${esc(d.direccion||'')}</textarea></div>
  <div class="fld"><label for="f_h">Horario preferido</label><select id="f_h"><option>Mañana (8 am – 12 m)</option><option>Tarde (12 m – 5 pm)</option><option>Noche (5 pm – 8 pm)</option></select></div>
- <button class="btn p" type="submit">Crear mi pedido</button><button class="btn s" type="button" id="back">Volver</button></form>`;
+ <div class="secu">🔒 Tus datos solo se usan para coordinar tu entrega.</div><button class="btn p" type="submit" id="sub">Confirmar mi compra</button><button class="btn s" type="button" id="back">Volver</button></form>`;
  $('back').onclick=()=>{step='cart';drawCart()};
- $('ck').onsubmit=async e=>{e.preventDefault();const cli={nombre:$('f_n').value.trim(),telefono:$('f_t').value.trim(),cedula:$('f_c').value.trim(),zona:$('f_z').value.trim(),direccion:$('f_d').value.trim(),horario:$('f_h').value};
+ $('ck').onsubmit=async e=>{e.preventDefault();$('sub').disabled=true;$('sub').textContent='Registrando tu pedido…';const cli={nombre:$('f_n').value.trim(),telefono:$('f_t').value.trim(),correo:$('f_e').value.trim(),cedula:$('f_c').value.trim(),zona:$('f_z').value.trim(),direccion:$('f_d').value.trim(),horario:$('f_h').value};
   try{localStorage.setItem('trv_cliente',JSON.stringify(cli))}catch(e){}
   const now=new Date();const id='TRV-'+String(now.getFullYear()).slice(2)+String(now.getMonth()+1).padStart(2,'0')+String(now.getDate()).padStart(2,'0')+'-'+Math.random().toString(36).slice(2,6).toUpperCase();
   order={id,fecha:now.toISOString(),cliente:cli,delivery:'Gratis',items:cart.map(c=>({sku:c.sku,nombre:P(c.sku).n,opcion:c.note,q:c.q}))};
   if(CONFIG.endpoint){try{await fetch(CONFIG.endpoint,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(order)})}catch(err){}}
   cart=[];save();render();step='done';drawCart()};}
-function msg(o){return `🧸 *Pedido ${o.id}* – Traviesitos Children\n\n`+o.items.map(i=>`• ${i.q} x ${i.nombre} (Ref. ${i.sku})${i.opcion?' – '+i.opcion:''}`).join('\n')+`\n\nTotal de artículos: ${o.items.reduce((a,c)=>a+c.q,0)}\n🚚 Delivery: GRATIS\n\n*Datos de entrega*\nNombre: ${o.cliente.nombre}\nTeléfono: ${o.cliente.telefono}${o.cliente.cedula?'\nCédula: '+o.cliente.cedula:''}\nZona: ${o.cliente.zona}\nDirección: ${o.cliente.direccion}\nHorario: ${o.cliente.horario}\n\n¿Me confirman precio y disponibilidad?`}
+function msg(o){return `🧸 *Pedido ${o.id}* – Traviesitos Children\n\n`+o.items.map(i=>`• ${i.q} x ${i.nombre} (Ref. ${i.sku})${i.opcion?' – '+i.opcion:''}`).join('\n')+`\n\nTotal de artículos: ${o.items.reduce((a,c)=>a+c.q,0)}\n🚚 Delivery: GRATIS\n\n*Datos de entrega*\nNombre: ${o.cliente.nombre}\nTeléfono: ${o.cliente.telefono}\nCorreo: ${o.cliente.correo}${o.cliente.cedula?'\nCédula: '+o.cliente.cedula:''}\nZona: ${o.cliente.zona}\nDirección: ${o.cliente.direccion}\nHorario: ${o.cliente.horario}\n\n¡Gracias! Quedo atento(a) a la confirmación.`}
 function openCart(){drawCart();$('cart').classList.add('open');$('shade').hidden=false}
 function closeCart(){$('cart').classList.remove('open');$('shade').hidden=true}
 $('openCart').onclick=()=>{if(step==='done'&&!cart.length){}openCart()};$('cx').onclick=closeCart;$('shade').onclick=closeCart;
