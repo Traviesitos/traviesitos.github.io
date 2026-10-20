@@ -58,7 +58,8 @@ dialog::backdrop{background:rgba(15,15,50,.55)}
 .dlg{display:grid;grid-template-columns:1.1fr 1fr}
 .gal{background:#fff;min-width:0;position:relative}
 .gal .main{aspect-ratio:1;width:100%;max-width:100%;object-fit:contain;display:block;background:#fff}
-.gal video{aspect-ratio:1;width:100%;max-width:100%;background:#000;display:block}
+.gal video{width:100%;max-width:100%;max-height:440px;object-fit:contain;background:#000;display:block}
+.gal [hidden]{display:none!important}
 .gal .th{display:flex;gap:6px;padding:8px;overflow-x:auto;background:var(--card)}
 .gal .th button{border:2px solid transparent;border-radius:10px;padding:0;background:none;cursor:pointer;flex:0 0 58px;position:relative}
 .gal .th button[aria-current="true"]{border-color:var(--pink)}
@@ -118,6 +119,7 @@ form.ck{display:flex;flex-direction:column;gap:10px}
 @keyframes mq{to{transform:translateX(-50%)}}
 @media (prefers-reduced-motion:reduce){.promo,.promo .track{animation:none}}
 .offer{margin-top:14px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:linear-gradient(120deg,rgba(229,0,125,.10),rgba(243,146,0,.12));border:2px dashed var(--pink);border-radius:18px;padding:12px 16px;max-width:560px}
+.offer[hidden]{display:none}
 .offer .pct{font-family:var(--fd);font-weight:700;font-size:38px;line-height:1;color:var(--pink)}
 .offer .ot{flex:1 1 200px;min-width:0}.offer .ot b{font-family:var(--fd);font-size:17px;display:block;color:var(--navyt)}.offer .ot span{font-size:13px;color:var(--mut)}
 .offer .code{font-family:var(--fd);font-weight:700;letter-spacing:.06em;background:var(--pink);color:#fff;border-radius:10px;padding:6px 12px;font-size:14px}
@@ -197,7 +199,7 @@ function render(){const L=$('list');L.innerHTML='';let any=0;
 let cur=null,qv=1,selC=null,selS=null;
 function stopVid(){const v=$('dvid');try{v.pause()}catch(e){}v.removeAttribute('src');v.load();v.hidden=true}
 function showMedia(k){const p=cur,m=media[k];if(!m)return;[...$('dth').children].forEach((b,i)=>b.setAttribute('aria-current',i===k));
- if(m.t==='v'){$('dimg').hidden=true;const v=$('dvid');v.hidden=false;v.muted=true;v.src='vid/'+m.f;v.currentTime=0;const pr=v.play();if(pr)pr.catch(()=>{})}else{stopVid();$('dimg').hidden=false;$('dimg').src=m.src}}
+ if(m.t==='v'){const v=$('dvid');v.hidden=false;v.muted=true;if(v.getAttribute('src')!=='vid/'+m.f){v.src='vid/'+m.f}v.currentTime=0;const pr=v.play();if(pr)pr.catch(()=>{})}else{$('dimg').hidden=false;$('dimg').src=m.src}}
 let media=[];
 function open(p){stopVid();cur=p;qv=1;$('qv').textContent=1;selC=p.co.length===1?p.co[0][0]:null;selS=p.sz.length===1?p.sz[0]:null;
  const dlg=$('dlg');dlg.style.setProperty('--ac',`var(${AC[p.s]})`);
@@ -205,7 +207,7 @@ function open(p){stopVid();cur=p;qv=1;$('qv').textContent=1;selC=p.co.length===1
  media=[...p.v.map(f=>({t:'v',f})),...p.i.map(f=>({t:'i',src:'img/'+f}))];
  $('dth').innerHTML=media.length>1?media.map((m,k)=>`<button type="button" aria-label="${m.t==='v'?'Ver video':'Foto '+(k+1)}"><img src="${m.t==='v'?'img/'+p.i[0]:m.src}" alt="">${m.t==='v'?'<span class="pl">▶</span>':''}</button>`).join(''):'';
  [...$('dth').children].forEach((b,k)=>b.onclick=()=>showMedia(k));
- $('dimg').alt=p.n;$('dimg').removeAttribute('src');drawPick();dlg.showModal();showMedia(0)}
+ $('dimg').alt=p.n;$('dimg').hidden=false;$('dimg').src='img/'+p.i[0];drawPick();dlg.showModal();const fi=media.findIndex(m=>m.t==='i');[...$('dth').children].forEach((b,i)=>b.setAttribute('aria-current',i===fi));if(p.v.length)showMedia(0)}
 function drawPick(){const p=cur;
  $('dcol').innerHTML=p.co.length>1?`<div class="pkr"><b>Color: ${esc(selC||'elige uno')}</b><div class="opts">${p.co.map((c,k)=>`<button type="button" class="opt" data-c="${k}" aria-pressed="${selC===c[0]}">${c[1]?`<img src="sw/${c[1]}" alt="">`:''}${esc(c[0])}</button>`).join('')}</div></div>`:(p.co.length===1?`<div class="small">Color: ${esc(p.co[0][0])}</div>`:'');
  $('dsz').innerHTML=p.sp?(p.sz.length?`<div class="pkr"><b>Detalles</b><div class="opts">${p.sz.map(s=>`<span class="opt" style="cursor:default">${esc(s)}</span>`).join('')}</div></div>`:''):(p.sz.length>1?`<div class="pkr"><b>${p.s==='Morrales'?'Tamaño':'Talla'}: ${esc(selS||'elige una')}</b><div class="opts">${p.sz.map((s,k)=>`<button type="button" class="opt" data-s="${k}" aria-pressed="${selS===s}">${esc(s)}</button>`).join('')}</div></div>`:(p.sz.length?`<div class="small">Talla: ${esc(p.sz[0])}</div>`:''));
@@ -213,7 +215,7 @@ function drawPick(){const p=cur;
  $('dsz').querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{selS=p.sz[+b.dataset.s];drawPick()});
  const miss=(p.co.length>1&&!selC)?'Elige un color':(!p.sp&&p.sz.length>1&&!selS)?(p.s==='Morrales'?'Elige un tamaño':'Elige una talla'):'';
  $('dadd').textContent=miss||'Agregar a mi pedido';$('dadd').disabled=!!miss;}
-$('dx').onclick=()=>$('dlg').close();$('dlg').addEventListener('close',stopVid);
+$('dx').onclick=()=>$('dlg').close();$('dlg').addEventListener('close',()=>{if(!$('dlg').open)stopVid()});
 $('dlg').onclick=e=>{if(e.target===$('dlg'))$('dlg').close()};
 $('qm').onclick=()=>{qv=Math.max(1,qv-1);$('qv').textContent=qv};$('qp').onclick=()=>{qv++;$('qv').textContent=qv};
 $('dadd').onclick=()=>{const p=cur;const parts=[];if(p.co.length>1)parts.push('Color '+selC);if(!p.sp&&p.sz.length>1&&selS)parts.push((p.s==='Morrales'?'Tamaño ':'Talla ')+selS);addItem(p,qv,parts.join(' · '));$('dlg').close();openCart()};
