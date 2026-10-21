@@ -28,7 +28,6 @@ jobs:
             cat p.part >> site.zip
           done
           echo "$SHA  site.zip" | sha256sum -c -
-          rm -rf img sw vid
           unzip -o -q site.zip -d .
           rm -f site.zip p.part
           touch .nojekyll
